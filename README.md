@@ -1,16 +1,16 @@
 ![header](imgs/header.png)
 
-# MassiveFold
+# AFmassive
 
 Table of contents
 =================
 
-  * [Setup](#setup)
+  * [Installation](#installation)
   * [Added parameters](#added-parameters)
   * [Dropout](#dropout)
   * [Usage](#usage)
     * [Examples](#example)
-  * [MassiveFold in parallel](#running-massivefold-in-parallel)
+  * [AFmassive in parallel](#running-AFmassive-in-parallel)
       * [Setup](#setup-1)
       * [Header Building](#jobfiles-header-building)
       * [Usage](#usage-1)
@@ -18,35 +18,77 @@ Table of contents
   * [Plots](#mf_plots-output-representation)
 
 
-This AlphaFold version aims at massively expanding the sampling of structure predictions following Björn Wallner's 
-AFsample version of AlphaFold (https://github.com/bjornwallner/alphafoldv2.2.0/)  and to provide some optimizations in the computing.  
-In particular, it optimizes the parallellization of the computing, generating automatically batches of predictions that can be run in parallel. 
-The size of these batches is automatically calculated running a first calibrating run or set manually. All the results are then gathered 
-in a same folder and a final global ranking is performed on all the produced structures.
-The optimizations and the parameters added to the genuine DeepMind's AlphaFold are described below.
+AFmassive is a modified AlphaFold version that integrates diversity parameters for massive sampling, as an updated version of Björn Wallner's AFsample version of AlphaFold (https://github.com/bjornwallner/alphafoldv2.2.0/).
 
-MassiveFold is an extended version of DeepMind's AlphaFold v2.3.2: https://github.com/deepmind/alphafold
+The parameters added to the genuine DeepMind's AlphaFold are described below.
 
-# Setup
+AFmassive is an extended version of DeepMind's AlphaFold v2.3.2: https://github.com/deepmind/alphafold
+
+## Installation
 The setup is the same as the one for AlphaFold v2.3 except that this repository has to be used instead of the DeepMind's one.  
 We use an installation based on conda. You can install it following these steps https://github.com/kalininalab/alphafold_non_docker
-or using the conda environment file that we provide (env.yml). In this last case, don't forget to apply the OpenMM patch and 
+or using the conda environment file that we provide (environment.yml). In this last case, don't forget to apply the OpenMM patch and 
 to add the chemical properties to the common folder.
 
 ```
 conda create env -f env.yml
-conda activate massivefold-1.1.0
+conda activate AFmassive-1.1.0
 cd ${CONDA_PREFIX}/lib/python3.8/site-packages/
-wget -N https://raw.githubusercontent.com/GBLille/MassiveFold/MFv1.1.0/docker/openmm.patch
+wget -N https://raw.githubusercontent.com/GBLille/AFmassive/AFMv1.1.0/docker/openmm.patch
 patch -p0 -N < openmm.patch
 cd ${CONDA_PREFIX}/lib/python3.8/site-packages/alphafold/common/
 wget -N https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
 ```
 
-However, v1 and v2 neural network (NN) model parameters have to be present in the *param* folder and should contain the 
-version number in their name.\
-Therefore, the list of NN model parameters in the folder should be as follows:
+The setup is the same as the one for AlphaFold v2.3 except that this repository has to be used instead of the DeepMind's one.
 
+### Genetic databases
+
+AFmassive requires the installation of the genetic databases which are provided by [AlphaFold2](https://github.com/google-deepmind/alphafold/). 
+
+The script `scripts/download_all_data.sh` can be used to download and set up all of the databases:
+
+*   Recommended default:
+
+    ```bash
+    scripts/download_all_data.sh <DOWNLOAD_DIR>
+    ```
+
+For more details, read the documentation provided on by [DeepMind's AlphaFold2](https://github.com/google-deepmind/alphafold/#genetic-databases). 
+
+### AlphaFold neural network model parameters
+
+AFmassive uses several neural network (NN) model parameters provided by different versions of [AlphaFold2](https://github.com/google-deepmind/alphafold/) including versions `2.1.*`, `2.2.*` and `2.3.*`. If you have already installed the genetic databases for [AlphaFold2 2.3.2](https://github.com/google-deepmind/alphafold/), then you have to copy the v1 and v2 neural network (NN) model parameters in the `<DOWNLOAD_DIR>/params` folder created during the installation of the genetic databases.
+
+Parameters for monomer and multimer v1 (used by AlphaFold [v2.1.0](https://github.com/google-deepmind/alphafold/tree/v2.1.0)) are available here: https://storage.googleapis.com/alphafold/alphafold_params_2021-10-27.tar
+
+```bash
+ALPHAFOLD_PARAMS="alphafold_params_2021-10-27.tar"
+wget https://storage.googleapis.com/alphafold/${ALPHAFOLD_PARAMS}
+tar xf ${ALPHAFOLD_PARAMS} -C <DOWNLOAD_DIR>/params`
+```
+
+Parameters for monomer and multimer v2 (used by AlphaFold [v2.2.0](https://github.com/google-deepmind/alphafold/blob/v2.2.0), [v2.2.1](https://github.com/google-deepmind/alphafold/blob/v2.2.1), [v2.2.2](https://github.com/google-deepmind/alphafold/blob/v2.2.2), [v2.2.3](https://github.com/google-deepmind/alphafold/blob/v2.2.3), [v2.2.4](https://github.com/google-deepmind/alphafold/blob/v2.2.4)) are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-03-02.tar
+
+```bash
+ALPHAFOLD_PARAMS="alphafold_params_2022-03-02.tar"
+wget https://storage.googleapis.com/alphafold/${ALPHAFOLD_PARAMS}
+tar xf ${ALPHAFOLD_PARAMS} -C <DOWNLOAD_DIR>/params`
+```
+
+Parameters for monomer and multimer v3 (used by AlphaFold [v2.3.0](https://github.com/google-deepmind/alphafold/blob/v2.3.0), [v2.3.1](https://github.com/google-deepmind/alphafold/blob/v2.3.1), [v2.3.2](https://github.com/google-deepmind/alphafold/blob/v2.3.2)) are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar
+
+```bash
+ALPHAFOLD_PARAMS="alphafold_params_2022-12-06.tar"
+wget https://storage.googleapis.com/alphafold/${ALPHAFOLD_PARAMS}
+tar xf ${ALPHAFOLD_PARAMS} -C <DOWNLOAD_DIR>/params`
+```
+
+*N.B.*: the NN parameters for monomers are present in the three tarball archives but the three sets are the same. Only the NN for multimers have three different versions. It makes 5 NN models for monomers and 15 for multimers.
+
+Once the installation completed, the list of NN model parameters in the `<DOWNLOAD_DIR>/params` folder should be as follows:
+
+```
 params_model_1_multimer_v1.npz  
 params_model_1_multimer_v2.npz  
 params_model_1_multimer_v3.npz  
@@ -72,13 +114,13 @@ params_model_5_multimer_v2.npz
 params_model_5_multimer_v3.npz  
 params_model_5.npz  
 params_model_5_ptm.npz  
+```
 
-Parameters for monomer and multimer v3 are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar  
-Parameters for monomer and multimer v2 are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-03-02.tar  
-Parameters for monomer and multimer v1 are available here: https://storage.googleapis.com/alphafold/alphafold_params_2021-10-27.tar  
+## Running AFmassive
 
-# Added parameters
-This is the list of the parameters added to AlphaFold 2.3.2 and their description, also accessible through the --help option.
+### New parameters added in AFmassive with respect to AlphaFold
+
+This is the list of the parameters added to AlphaFold 2.3.2 and their description, also accessible through the `--help` option.
 
   **--alignments_only**: whether to generate only alignments. Only alignments will be generated by the data pipeline, the modelling will not be performed
     (default: 'false')  
@@ -123,10 +165,10 @@ This is the list of the parameters added to AlphaFold 2.3.2 and their descriptio
   &nbsp;&nbsp;&nbsp;&nbsp; *e.g.* --num_predictions_per_model 21 --start_prediction 20 will make model _20 and _21 *etc.*  
   &nbsp;&nbsp;&nbsp;&nbsp; (default: '1')  
   **--end_prediction**: index of the last predicted structure,  
-&nbsp;&nbsp;&nbsp;&nbsp; also designates how many predictions (each with a different random seed) will be  
-&nbsp;&nbsp;&nbsp;&nbsp; generated per model. *e.g.* if this is 2 and there are 5 models then there will be 10 predictions per input.  
-&nbsp;&nbsp;&nbsp;&nbsp; Note: this FLAG works for monomer and multimer  
-&nbsp;&nbsp;&nbsp;&nbsp; (default: '5')  
+  &nbsp;&nbsp;&nbsp;&nbsp; also designates how many predictions (each with a different random seed) will be  
+  &nbsp;&nbsp;&nbsp;&nbsp; generated per model. *e.g.* if this is 2 and there are 5 models then there will be 10 predictions per input.  
+  &nbsp;&nbsp;&nbsp;&nbsp; Note: this FLAG works for monomer and multimer  
+  &nbsp;&nbsp;&nbsp;&nbsp; (default: '5')  
   **--templates**: whether to use templates or not, setting it to false is faster than filtering by date
   (default: 'true')  
   **--score_threshold_output**: only predictions with ranking confidence above this score  
@@ -137,16 +179,16 @@ This is the list of the parameters added to AlphaFold 2.3.2 and their descriptio
   &nbsp;&nbsp;&nbsp;&nbsp; prediction with a ranking confidence > max_score_stop has been obtained  
   &nbsp;&nbsp;&nbsp;&nbsp; (default: '1')
 
-# Dropout
-The dropout at inference can be activated with the **--dropout** parameter set to true for activating it in the Evoformer 
-module and **--dropout_structure_module** set to true for activating it in the structure module.
-The same dropout rates as those used by DeepMind at training are used. Here are DeepMind's architectural details 
-(Jumper J et al, Nature, 2021 - Fig 3.a), annotated by Björn Wallner for CASP15 (https://predictioncenter.org/), 
-that shows the various dropout rates:  
+### Dropout
+
+The dropout at inference can be activated with the `--dropout` parameter set to true to activate it in the Evoformer module and 
+`--dropout_structure_module` set to true to activate it in the structure module.
+The same dropout rates as those used by DeepMind at training are used. Here are DeepMind's architectural details (Jumper J et al, Nature, 2021 - Fig 3.a), 
+annotated by Björn Wallner for CASP15 (https://predictioncenter.org/), that shows the various dropout rates:  
 
 ![Dropout](imgs/dropout_arch.png)
 
-However, the **--dropout_rates_filename** parameter allows to modify these rates, providing them in a json file. 
+However, the `--dropout_rates_filename` parameter allows to modify these rates, providing them in a json file. 
 Here is an example of the content of such a json file:
 ```json
 {  
@@ -163,9 +205,8 @@ Here is an example of the content of such a json file:
 }  
 ```
 
-# Usage
-## Example
-By default, MassiveFold runs with the same parameters as AlphaFold2, except it uses all the versions 
+### Usage
+By default, AFmassive runs with the same parameters as AlphaFold2, except it uses all the versions 
 of neural network model parameters for complexes and not only the ones of the last version.  
 
 Here is an example how to run a multimer prediction with all versions of neural network model parameters, without templates,
@@ -179,7 +220,7 @@ python3 ./run_alphafold.py
     --data_dir=*path_to_set*
     --db_preset=full_dbs
     --model_preset=multimer
-    --max_template_date=2023-07-11
+    --max_template_date=2024-01-01
     --use_precomputed_msas=false
     --models_to_relax=best
     --use_gpu_relax=true
@@ -209,11 +250,11 @@ python3 ./run_alphafold.py
     --uniprot_database_path=*path_to_set*
 ```
 
-To only use a selection of models, separate them with a comma in the ***--models_to_use*** parameter, *e.g.*:  
---models_to_use=model_3_multimer_v1,model_3_multimer_v3  
+To only use a selection of NN models, separate them with a comma in the `--models_to_use` parameter, *e.g.*:  
+`--models_to_use=model_3_multimer_v1,model_3_multimer_v3`  
 
 A script is also provided to relax only one structure. The pkl file of the prediction has to be given in parameters and the 
-*features.pkl* file must be present in the folder. *e.g.*:
+`features.pkl` file must be present in the folder. *e.g.*:
 ```bash
 python3 run_relax_from_results_pkl.py result_model_4_multimer_v3_pred_0.pkl
 ```
