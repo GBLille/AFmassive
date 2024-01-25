@@ -2,20 +2,17 @@
 
 # AFmassive
 
-Table of contents
-=================
+## Table of contents
 
+<!-- TOC -->
   * [Installation](#installation)
-  * [Added parameters](#added-parameters)
-  * [Dropout](#dropout)
-  * [Usage](#usage)
-    * [Examples](#example)
-  * [AFmassive in parallel](#running-AFmassive-in-parallel)
-      * [Setup](#setup-1)
-      * [Header Building](#jobfiles-header-building)
-      * [Usage](#usage-1)
-      * [Inference workflow](#inference-workflow)
-  * [Plots](#mf_plots-output-representation)
+    * [Sequence databases](#sequence-databases)
+    * [AlphaFold neural network model parameters](#alphafold-neural-network-model-parameters)
+  * [Running AFmassive](#running-afmassive)
+    * [New parameters added in AFmassive with respect to AlphaFold](#new-parameters-added-in-afmassive-with-respect-to-alphafold)
+    * [Dropout](#dropout)
+    * [Usage](#usage)
+<!-- TOC -->
 
 
 AFmassive is a modified AlphaFold version that integrates diversity parameters for massive sampling, as an updated version of Björn Wallner's AFsample version of AlphaFold (https://github.com/bjornwallner/alphafoldv2.2.0/).
@@ -42,13 +39,13 @@ wget -N https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b647
 
 The setup is the same as the one for AlphaFold v2.3 except that this repository has to be used instead of the DeepMind's one.
 
-### Genetic databases
+### Sequence databases
 
-AFmassive requires the installation of the genetic databases which are provided by [AlphaFold2](https://github.com/google-deepmind/alphafold/). 
+AFmassive requires the installation of the sequence databases which are provided by [AlphaFold2](https://github.com/google-deepmind/alphafold/). 
 
 The script `scripts/download_all_data.sh` can be used to download and set up all of the databases:
 
-*   Recommended default:
+Recommended default:
 
     ```bash
     scripts/download_all_data.sh <DOWNLOAD_DIR>
@@ -58,9 +55,14 @@ For more details, read the documentation provided on by [DeepMind's AlphaFold2](
 
 ### AlphaFold neural network model parameters
 
-AFmassive uses several neural network (NN) model parameters provided by different versions of [AlphaFold2](https://github.com/google-deepmind/alphafold/) including versions `2.1.*`, `2.2.*` and `2.3.*`. If you have already installed the genetic databases for [AlphaFold2 2.3.2](https://github.com/google-deepmind/alphafold/), then you have to copy the v1 and v2 neural network (NN) model parameters in the `<DOWNLOAD_DIR>/params` folder created during the installation of the genetic databases.
+AFmassive uses several neural network (NN) model parameters provided by different versions of [AlphaFold2](https://github.com/google-deepmind/alphafold/) including 
+versions `2.1`, `2.2` and `2.3`. If you have already installed the sequence databases for [AlphaFold2 2.3.2](https://github.com/google-deepmind/alphafold/), 
+then you have to copy the v1 and v2 neural network (NN) model parameters in the `<DOWNLOAD_DIR>/params` folder created 
+during the installation of the databases.
 
-Parameters for monomer and multimer v1 (used by AlphaFold [v2.1.0](https://github.com/google-deepmind/alphafold/tree/v2.1.0)) are available here: https://storage.googleapis.com/alphafold/alphafold_params_2021-10-27.tar
+Parameters for monomer and multimer v1 (used by AlphaFold [v2.1.0](https://github.com/google-deepmind/alphafold/tree/v2.1.0), 
+[v2.1.1](https://github.com/google-deepmind/alphafold/tree/v2.1.1), [v2.1.2](https://github.com/google-deepmind/alphafold/tree/v2.1.2)) 
+are available here: https://storage.googleapis.com/alphafold/alphafold_params_2021-10-27.tar
 
 ```bash
 ALPHAFOLD_PARAMS="alphafold_params_2021-10-27.tar"
@@ -68,7 +70,10 @@ wget https://storage.googleapis.com/alphafold/${ALPHAFOLD_PARAMS}
 tar xf ${ALPHAFOLD_PARAMS} -C <DOWNLOAD_DIR>/params`
 ```
 
-Parameters for monomer and multimer v2 (used by AlphaFold [v2.2.0](https://github.com/google-deepmind/alphafold/blob/v2.2.0), [v2.2.1](https://github.com/google-deepmind/alphafold/blob/v2.2.1), [v2.2.2](https://github.com/google-deepmind/alphafold/blob/v2.2.2), [v2.2.3](https://github.com/google-deepmind/alphafold/blob/v2.2.3), [v2.2.4](https://github.com/google-deepmind/alphafold/blob/v2.2.4)) are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-03-02.tar
+Parameters for monomer and multimer v2 (used by AlphaFold [v2.2.0](https://github.com/google-deepmind/alphafold/tree/v2.2.0), 
+[v2.2.1](https://github.com/google-deepmind/alphafold/tree/v2.2.1), [v2.2.2](https://github.com/google-deepmind/alphafold/tree/v2.2.2), 
+[v2.2.3](https://github.com/google-deepmind/alphafold/tree/v2.2.3), [v2.2.4](https://github.com/google-deepmind/alphafold/tree/v2.2.4)) 
+are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-03-02.tar
 
 ```bash
 ALPHAFOLD_PARAMS="alphafold_params_2022-03-02.tar"
@@ -76,7 +81,10 @@ wget https://storage.googleapis.com/alphafold/${ALPHAFOLD_PARAMS}
 tar xf ${ALPHAFOLD_PARAMS} -C <DOWNLOAD_DIR>/params`
 ```
 
-Parameters for monomer and multimer v3 (used by AlphaFold [v2.3.0](https://github.com/google-deepmind/alphafold/blob/v2.3.0), [v2.3.1](https://github.com/google-deepmind/alphafold/blob/v2.3.1), [v2.3.2](https://github.com/google-deepmind/alphafold/blob/v2.3.2)) are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar
+Parameters for monomer and multimer v3 (used by AlphaFold [v2.3.0](https://github.com/google-deepmind/alphafold/tree/v2.3.0), 
+[v2.3.1](https://github.com/google-deepmind/alphafold/tree/v2.3.1), 
+[v2.3.2](https://github.com/google-deepmind/alphafold/tree/v2.3.2)) 
+are available here: https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar
 
 ```bash
 ALPHAFOLD_PARAMS="alphafold_params_2022-12-06.tar"
