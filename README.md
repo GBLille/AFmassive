@@ -40,9 +40,9 @@ The script `scripts/download_all_data.sh` can be used to download and set up all
 
 Recommended default:
 
-    ```bash
-    scripts/download_all_data.sh <DOWNLOAD_DIR>
-    ```
+```bash
+scripts/download_all_data.sh <DOWNLOAD_DIR>
+```
 
 For more details, read the documentation provided on by [DeepMind's AlphaFold2](https://github.com/google-deepmind/alphafold/#genetic-databases). 
 
