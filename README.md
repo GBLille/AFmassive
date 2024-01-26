@@ -30,6 +30,8 @@ or using the conda environment file that we provide (environment.yml).
 ```
 conda env create -f environment.yml
 conda activate AFmassive-1.1.0
+wget -O $CONDA_PREFIX/bin/run_AFmassive.py https://raw.githubusercontent.com/GBLille/AFmassive/devs_l/run_AFmassive.py
+chmod +x $CONDA_PREFIX/bin/run_AFmassive.py
 ```
 
 ### Sequence databases
