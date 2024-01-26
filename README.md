@@ -22,13 +22,14 @@ The parameters added to the genuine DeepMind's AlphaFold are described below.
 AFmassive is an extended version of DeepMind's AlphaFold v2.3.2: https://github.com/deepmind/alphafold
 
 ## Installation
+
 The setup is the same as the one for AlphaFold v2.3 except that this repository has to be used instead of the DeepMind's one.  
 We use an installation based on conda. You can install it following these steps https://github.com/kalininalab/alphafold_non_docker
 or using the conda environment file that we provide (environment.yml). In this last case, don't forget to apply the OpenMM patch and 
 to add the chemical properties to the common folder.
 
 ```
-conda create env -f environment.yml
+conda env create -f environment.yml
 conda activate AFmassive-1.1.0
 cd ${CONDA_PREFIX}/lib/python3.8/site-packages/
 wget -N https://raw.githubusercontent.com/GBLille/AFmassive/AFMv1.1.0/docker/openmm.patch
@@ -36,8 +37,6 @@ patch -p0 -N < openmm.patch
 cd ${CONDA_PREFIX}/lib/python3.8/site-packages/alphafold/common/
 wget -N https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
 ```
-
-The setup is the same as the one for AlphaFold v2.3 except that this repository has to be used instead of the DeepMind's one.
 
 ### Sequence databases
 
