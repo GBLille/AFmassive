@@ -28,7 +28,7 @@ or using the conda environment file that we provide (environment.yml). In this l
 to add the chemical properties to the common folder.
 
 ```
-conda create env -f env.yml
+conda create env -f environment.yml
 conda activate AFmassive-1.1.0
 cd ${CONDA_PREFIX}/lib/python3.8/site-packages/
 wget -N https://raw.githubusercontent.com/GBLille/AFmassive/AFMv1.1.0/docker/openmm.patch
