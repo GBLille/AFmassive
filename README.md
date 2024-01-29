@@ -146,7 +146,7 @@ This is the list of the parameters added to AlphaFold 2.3.2 and their descriptio
   &nbsp;&nbsp;&nbsp;&nbsp; in the structure module (default: 'false')  
   **--dropout_rates_filename**: provides dropout rates at inference from a json file.
   If None, default rates are used, if "dropout" is True.  
-  **--max_recycles**: maximum number of recycles to run
+  **--max_recycles**: maximum number of recycles to run for multimer
     (default: '20')
     (an integer)  
   **--early_stop_tolerance**: early stopping threshold for recycling
@@ -188,8 +188,8 @@ This is the list of the parameters added to AlphaFold 2.3.2 and their descriptio
   &nbsp;&nbsp;&nbsp;&nbsp; (default: '5')  
   **--templates**: whether to use templates or not, setting it to false is faster than filtering by date
   (default: 'true')  
-  **--min_score**: only predictions with ranking confidence above this score  
-  &nbsp;&nbsp;&nbsp;&nbsp; will generate pdb and pkl files, predictions below this  
+  **--min_score**: After the first recycle step, only predictions with ranking confidence above this score  
+  &nbsp;&nbsp;&nbsp;&nbsp; will generate pdb and pkl files and continue recycling, predictions below this  
   &nbsp;&nbsp;&nbsp;&nbsp; threshold will still be present in ranking_debug.json.  
   &nbsp;&nbsp;&nbsp;&nbsp; (default: '0')  
   **--max_score**: terminates the computing process when a suitable  
