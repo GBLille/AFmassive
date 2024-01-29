@@ -177,7 +177,7 @@ flags.DEFINE_float('min_score', 0,
                     'will generate pdb and pkl files and continue recycling, '
                     'predictions below this threshold will still be present in'
                     'ranking_debug.json.' )
-flags.DEFINE_float('max_batch_score', 0,
+flags.DEFINE_float('max_batch_score', 1,
                     'Terminates the computing process when a suitable '
                     'prediction with a ranking confidence > max_score has been obtained')
 
