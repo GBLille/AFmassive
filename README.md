@@ -64,6 +64,14 @@ wget https://storage.googleapis.com/alphafold/${ALPHAFOLD_PARAMS}
 tar xf ${ALPHAFOLD_PARAMS} -C <DOWNLOAD_DIR>/params`
 ```
 
+After download, rename all the files for the multimer model to add the `_v1` suffix:
+
+```bash
+for model in $(seq 5); do
+  mv params_model_${model}_multimer.npz params_model_${model}_multimer_v1.npz
+done
+```
+
 Parameters for monomer and multimer v2 (used by AlphaFold [v2.2.0](https://github.com/google-deepmind/alphafold/tree/v2.2.0), 
 [v2.2.1](https://github.com/google-deepmind/alphafold/tree/v2.2.1), [v2.2.2](https://github.com/google-deepmind/alphafold/tree/v2.2.2), 
 [v2.2.3](https://github.com/google-deepmind/alphafold/tree/v2.2.3), [v2.2.4](https://github.com/google-deepmind/alphafold/tree/v2.2.4)) 
