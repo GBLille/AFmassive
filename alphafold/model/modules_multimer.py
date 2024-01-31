@@ -513,6 +513,7 @@ class AlphaFold(hk.Module):
         safe_key1, safe_key2 = safe_key.split() if c.resample_msa_in_recycling else safe_key.duplicate()  # pylint: disable=line-too-long
         ret = apply_network(prev=prev, safe_key=safe_key2)
         score = get_iptm(ret)*0.8 + get_ptm(ret)*0.2
+        host_callback.id_print(456)
         host_callback.id_print(score)
         return i+1, prev, get_prev(ret), safe_key1, score
       
@@ -526,6 +527,8 @@ class AlphaFold(hk.Module):
         # Early stopping criteria based on criteria used in
         # AF2Complex: https://www.nature.com/articles/s41467-022-29394-2
         diff = jnp.sqrt(sq_diff + 1e-8)  # avoid bad numerics giving negatives
+        host_callback.id_print(123)
+        host_callback.id_print(diff)
         # score check for recycle condition
         confidence_above_threshold = (score > c.recycle_min_score)
         less_than_max_recycles = (i < num_iter)
@@ -533,6 +536,7 @@ class AlphaFold(hk.Module):
             (i == 0) | (diff > c.recycle_early_stop_tolerance))
         return less_than_max_recycles & has_exceeded_tolerance & confidence_above_threshold
 
+      host_callback.id_print(999)
       score = 1
       if hk.running_init():
         num_recycles, _, prev, safe_key, inter = recycle_body(
@@ -548,8 +552,11 @@ class AlphaFold(hk.Module):
 
     # Run extra iteration.
     ret = apply_network(prev=prev, safe_key=safe_key)
-    host_callback.id_print(get_iptm(ret)*0.8 + get_ptm(ret)*0.2)
-    #host_callback.id_print(get_iptm(ret))
+    score = get_iptm(ret)*0.8 + get_ptm(ret)*0.2
+    host_callback.id_print(456)
+    host_callback.id_print(score)
+    host_callback.id_print(9999)
+    
     if not return_representations:
       del ret['representations']
     ret['num_recycles'] = num_recycles

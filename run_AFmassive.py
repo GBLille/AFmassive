@@ -173,13 +173,17 @@ flags.DEFINE_boolean('dropout_structure_module',False, 'Activates dropout or not
 flags.DEFINE_string('dropout_rates_filename', None, 'Provides dropout rates for inference from a json file. '
                      'If None, default rates are used, if "dropout" is True.')
 flags.DEFINE_float('min_score', 0,
+                    'Only predictions with ranking confidence above this score '
+                    'will have their structure outputed as a pdb and pkl files'
+                    'and be present in the ranking_debug.json.')
+flags.DEFINE_float('stop_recycling_below', 0,
                     'After the first recycle step, only predictions with ranking confidence above this score '
-                    'will generate pdb and pkl files and continue recycling, '
-                    'predictions below this threshold will still be present in'
-                    'ranking_debug.json.' )
-flags.DEFINE_float('max_batch_score', 1,
+                    'will continue recycling, predictions below this threshold will still be present in'
+                    'ranking_debug.json and as ouput structures.' )
+flags.DEFINE_float('max_score', 1,
                     'Terminates the computing process when a suitable '
                     'prediction with a ranking confidence > max_score has been obtained')
+flags.DEFINE_boolean('keep_pkl', False, 'Whether to output pkl files or not.')
 
 FLAGS = flags.FLAGS
 
@@ -305,9 +309,10 @@ def predict_structure(
         logging.info(f"Number of recycles for this model: {np_prediction_result['num_recycles']}")
 
       # Save the model outputs.
-      result_output_path = os.path.join(output_dir, f'result_{model_name}.pkl')
-      with open(result_output_path, 'wb') as f:
-        pickle.dump(np_prediction_result, f, protocol=4)
+      if FLAGS.keep_pkl:
+        result_output_path = os.path.join(output_dir, f'result_{model_name}.pkl')
+        with open(result_output_path, 'wb') as f:
+          pickle.dump(np_prediction_result, f, protocol=4)
 
       # Add the predicted LDDT in the b-factor column.
       # Note that higher predicted LDDT value means higher model confidence.
@@ -329,8 +334,8 @@ def predict_structure(
 under threshold {FLAGS.min_score}")
 
     if FLAGS.model_preset == "multimer":
-      if prediction_result['ranking_confidence'] > FLAGS.max_batch_score:
-        print(f"\nThe max score {FLAGS.max_batch_score} has been reached with \
+      if prediction_result['ranking_confidence'] > FLAGS.max_score:
+        print(f"\nThe max score {FLAGS.max_score} has been reached with \
   prediction {model_name}: {prediction_result['ranking_confidence']}\n")
         break
 
@@ -532,7 +537,7 @@ def main(argv):
         model_config.data.common.num_recycle = FLAGS.max_recycles
 
     model_config.model.recycle_early_stop_tolerance = FLAGS.early_stop_tolerance
-    model_config.model.recycle_min_score = FLAGS.min_score
+    model_config.model.stop_recycling_below = FLAGS.stop_recycling_below
     model_config.model.global_config.eval_dropout = FLAGS.dropout
     logging.info(f'Setting max_recycles to {model_config.model.num_recycle}')
 
