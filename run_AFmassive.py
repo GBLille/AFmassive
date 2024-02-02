@@ -542,7 +542,7 @@ def main(argv):
     logging.info(f'Setting max_recycles to {model_config.model.num_recycle}')
 
     logging.info(f'Setting early stop tolerance to {model_config.model.recycle_early_stop_tolerance}')
-    logging.info(f'Setting min_score to {model_config.model.recycle_min_score}')
+    logging.info(f'Setting score threshold to stop recycling to {model_config.model.stop_recycling_below}')
     logging.info(f'Setting dropout to {model_config.model.global_config.eval_dropout}')
 
     # disabling dropout at structure module
