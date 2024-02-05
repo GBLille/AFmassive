@@ -213,8 +213,8 @@ By default, AFmassive runs with the same parameters as AlphaFold2, except it doe
 of the last version but uses all the versions for multimers.  
 
 Here is an example how to run a multimer prediction with all the versions of neural network model parameters, without 
-templates, activating dropout at inference in both Evoformer and structure module, with 100 recycles maximum and early 
-stop tolerance set to 0.1 Angströms. 
+templates, activating dropout at inference in both Evoformer and structure module, with 20 recycles maximum and early 
+stop tolerance set to 0.5 Angströms. 
 
 ```bash
 run_AFmassive.py
@@ -230,8 +230,8 @@ run_AFmassive.py
     --dropout=true
     --dropout_structure_module=true
     --dropout_rates_filename=
-    --max_recycles=100
-    --early_stop_tolerance=0.1
+    --max_recycles=20
+    --early_stop_tolerance=0.5
     --bfd_max_hits=100000
     --mgnify_max_hits=501
     --uniprot_max_hits=50000
