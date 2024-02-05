@@ -248,10 +248,3 @@ python3 ./run_alphafold.py
 
 To select which NN models are used, separate them with a comma in the `--models_to_use` parameter, *e.g.*:  
 `--models_to_use=model_3_multimer_v1,model_3_multimer_v3`  
-
-A script is also provided to relax only one structure. The pkl file of the prediction has to be given in parameters 
-and the `features.pkl` file must be present in the folder. *e.g.*:
-```bash
-python3 run_relax_from_results_pkl.py result_model_4_multimer_v3_pred_0.pkl
-```
-
