@@ -175,7 +175,7 @@ This is AFmassive parameters list added to AlphaFold 2.3.2 and their description
   &nbsp;&nbsp;&nbsp;&nbsp;a pdb and pkl files and be present in the ranking_debug.json (default: '0.0')  
   **--max_score**: terminates the computing process when a suitable prediction with a ranking confidence > max_score  
   &nbsp;&nbsp;&nbsp;&nbsp; has been obtained (default: '1')  
-  **--keep_pkl**: Whether to output pkl files or not. (default: 'false')  
+  **--keep_pkl**: Whether to output pkl files or not. (default: 'true')  
 
 ### Dropout
 

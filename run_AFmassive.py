@@ -183,7 +183,7 @@ flags.DEFINE_float('stop_recycling_below', 0,
 flags.DEFINE_float('max_score', 1,
                     'Terminates the computing process when a suitable '
                     'prediction with a ranking confidence > max_score has been obtained')
-flags.DEFINE_boolean('keep_pkl', False, 'Whether to output pkl files or not.')
+flags.DEFINE_boolean('keep_pkl', True, 'Whether to output pkl files or not.')
 
 FLAGS = flags.FLAGS
 
