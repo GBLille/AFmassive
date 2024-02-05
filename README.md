@@ -12,13 +12,16 @@
     * [New parameters added in AFmassive](#new-parameters-added-in-afmassive)
     * [Dropout](#dropout)
     * [Usage](#usage)
+  * [Authors](#authors)
 <!-- TOC -->
 
 
-AFmassive is a modified AlphaFold version that integrates diversity parameters for massive sampling, as an updated version of Björn Wallner's [AFsample](https://github.com/bjornwallner/alphafoldv2.2.0/).  
+AFmassive is a modified AlphaFold version that integrates diversity parameters for massive sampling, as a derivative 
+version of Björn Wallner's [AFsample](https://github.com/bjornwallner/alphafoldv2.2.0/).  
 It was extended from DeepMind's [AlphaFold v2.3.2](https://github.com/deepmind/alphafold).
 
-AFmassive was designed to be optimally used with [MassiveFold](https://github.com/GBLille/MassiveFold) for parallel computing.  
+AFmassive was designed to be optimally used with [MassiveFold](https://github.com/GBLille/MassiveFold) for parallel computing but can also be used outside 
+MassiveFold.  
 The parameters added to the original DeepMind's AlphaFold are described 
 [below](https://github.com/GBLille/AFmassive?tab=readme-ov-file#new-parameters-added-in-afmassive-with-respect-to-alphafold).
 
@@ -38,7 +41,7 @@ wget -O ${CONDA_PREFIX}/lib/python3.8/site-packages/alphafold/common/stereo_chem
 
 ### Sequence databases
 
-AFmassive requires the installation of the sequence databases which are provided by [AlphaFold2](https://github.com/google-deepmind/alphafold/). 
+AFmassive requires the installation of the sequence databases which are provided by [DeepMind's AlphaFold2](https://github.com/google-deepmind/alphafold/). 
 
 The script `scripts/download_all_data.sh` can be used to download and set up all the databases:
 
@@ -48,7 +51,7 @@ Recommended default:
 scripts/download_all_data.sh <DOWNLOAD_DIR>
 ```
 
-For more details, read the documentation provided by [DeepMind's AlphaFold2](https://github.com/google-deepmind/alphafold/#genetic-databases). 
+For more details, read the documentation provided by [AlphaFold2](https://github.com/google-deepmind/alphafold/#genetic-databases). 
 
 ### AlphaFold neural network model parameters
 
@@ -183,12 +186,13 @@ The dropout at inference can be activated with the `--dropout` parameter set to 
 If `--dropout_structure_module` is set to true, the dropout is also activated in the structure module. If not, it is only activated in the Evoformer module.  
 The same dropout rates as those used by DeepMind at training are used by default.
 The following figure depicts DeepMind's architectural details (Jumper J et al, Nature, 2021 - Fig 3.a), 
-annotated by Björn Wallner for CASP15 (https://predictioncenter.org/), showing the various dropout rates:  
+annotated by Björn Wallner for [CASP15](https://predictioncenter.org/), showing the various dropout rates (red frame 
+detailed just below):  
 
 ![Dropout](imgs/dropout_arch.png)
 
-Also, you can modify these rates by using the `--dropout_rates_filename` parameter. 
-The parameter takes a path to a json file, this is an exemple of what it should contain:
+These rates can be modified also by using the `--dropout_rates_filename` parameter. 
+The parameter takes a path to a json file. This is an example of what it should contain:
 ```json
 {  
     "dropout_rate_msa_row_attention_with_pair_bias": 0.15,  
@@ -205,17 +209,19 @@ The parameter takes a path to a json file, this is an exemple of what it should 
 ```
 
 ### Usage
-By default, AFmassive runs with the same parameters as AlphaFold2, except it not only the NN model parameters parameters of the last version but uses all the versions for complexes.  
+By default, AFmassive runs with the same parameters as AlphaFold2, except it doesn't use only the NN model parameters 
+of the last version but uses all the versions for multimers.  
 
-Here is an example how to run a multimer prediction with all versions of neural network model parameters, without templates, activating dropout at inference in both Evoformer and structure module, with 100 recycles maximum and early stop tolerance set to 0.1 Angströms. 
+Here is an example how to run a multimer prediction with all the versions of neural network model parameters, without 
+templates, activating dropout at inference in both Evoformer and structure module, with 100 recycles maximum and early 
+stop tolerance set to 0.1 Angströms. 
 
 ```bash
-python3 ./run_alphafold.py
+run_AFmassive.py
     --fasta_paths=seq.fasta
     --output_dir=./output
     --data_dir=*path_to_set*
     --db_preset=full_dbs
-    --model_preset=multimer
     --max_template_date=2024-01-01
     --use_precomputed_msas=false
     --models_to_relax=best
@@ -230,12 +236,15 @@ python3 ./run_alphafold.py
     --mgnify_max_hits=501
     --uniprot_max_hits=50000
     --uniref_max_hits=10000
+    --model_preset=multimer
     --models_to_use=
     --start_prediction=1
     --end_prediction=5
     --templates=false
+    --stop_recycling_below=0
     --min_score=0
     --max_score=1
+    --keep_pkl=true
     --uniref90_database_path=*path_to_set*
     --mgnify_database_path=*path_to_set*
     --template_mmcif_dir=*path_to_set*
@@ -248,3 +257,16 @@ python3 ./run_alphafold.py
 
 To select which NN models are used, separate them with a comma in the `--models_to_use` parameter, *e.g.*:  
 `--models_to_use=model_3_multimer_v1,model_3_multimer_v3`  
+
+## Authors
+Nessim Raouraoua (UGSF - UMR 8576, France)  
+Claudio Mirabello (NBIS, Sweden)  
+Christophe Blanchet (IFB, France)  
+Björn Wallner (Linköping University, Sweden)  
+Marc F Lensink (UGSF - UMR8576, France)  
+Guillaume Brysbaert (UGSF - UMR 8576, France)  
+
+This work was carried out as part of the Work Package 4 of the [MUDIS4LS project](https://www.france-bioinformatique.fr/actualites/mudis4ls-le-projet-despaces-numeriques-mutualises-pour-les-sciences-du-vivant/) 
+lead by the French Bioinformatics Institute ([IFB](https://www.france-bioinformatique.fr/)). It was initiated at the 
+[IDRIS Open Hackathon](http://www.idris.fr/annonces/idris-gpu-hackathon-2023.html), part of the Open Hackathons program. 
+The authors would like to acknowledge OpenACC-Standard.org for their support.
