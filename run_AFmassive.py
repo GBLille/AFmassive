@@ -174,7 +174,7 @@ flags.DEFINE_string('dropout_rates_filename', None, 'Provides dropout rates for 
                      'If None, default rates are used, if "dropout" is True.')
 flags.DEFINE_float('min_score', 0,
                     'Only predictions with ranking confidence above this score '
-                    'will have their structure output as a pdb and pkl files'
+                    'will have their structure output as a pdb and pkl files '
                     'and be present in the ranking_debug.json.')
 flags.DEFINE_float('stop_recycling_below', 0,
                     'After the first recycle step, only predictions with ranking confidence above this score '

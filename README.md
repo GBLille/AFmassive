@@ -12,6 +12,7 @@
     * [New parameters added in AFmassive](#new-parameters-added-in-afmassive)
     * [Dropout](#dropout)
     * [Usage](#usage)
+    * [Plots](#plots)
   * [Authors](#authors)
 <!-- TOC -->
 
@@ -257,6 +258,13 @@ run_AFmassive.py
 
 To select which NN models are used, separate them with a comma in the `--models_to_use` parameter, *e.g.*:  
 `--models_to_use=model_3_multimer_v1,model_3_multimer_v3`  
+
+### Plots
+To plot prediction quality graphs, you can use the [massivefold_plots.py](https://github.com/GBLille/MassiveFold/tree/devs_l/massivefold) 
+script, which is directly included in [MassiveFold](https://github.com/GBLille/MassiveFold).
+
+***N.B***: if the `--keep_pkl` is set to `false`, some plots can't be produced because they rely on the data included in 
+the *pkl* files.
 
 ## Authors
 Nessim Raouraoua (UGSF - UMR 8576, France)  
