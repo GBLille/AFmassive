@@ -34,7 +34,7 @@ We use an installation based on conda. You can install it using the environment 
 ```
 wget https://raw.githubusercontent.com/GBLille/AFmassive/v1.1.0/environment.yml
 conda env create -f environment.yml
-conda activate AFmassive
+conda activate AFmassive-1.1.0
 wget -O $CONDA_PREFIX/bin/run_AFmassive.py https://raw.githubusercontent.com/GBLille/AFmassive/v1.1.0/run_AFmassive.py
 chmod +x $CONDA_PREFIX/bin/run_AFmassive.py
 wget -O ${CONDA_PREFIX}/lib/python3.8/site-packages/alphafold/common/stereo_chemical_props.txt https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
