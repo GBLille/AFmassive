@@ -142,7 +142,7 @@ flags.DEFINE_integer('uniprot_max_hits', 50000, 'Max hits in uniprot MSA')
 flags.DEFINE_integer('mgnify_max_hits', 501, 'Max hits in mgnify MSA')
 flags.DEFINE_integer('uniref_max_hits', 10000, 'Max hits in uniref MSA')
 flags.DEFINE_integer('bfd_max_hits', 100000, 'Max hits in BFD/uniref MSA')
-flags.DEFINE_float('early_stop_tolerance', 0.5,'Early stopping threshold for recycling')
+flags.DEFINE_float('early_stop_tolerance', 0.5,'Early stop threshold for recycling')
 flags.DEFINE_enum_class('models_to_relax', ModelsToRelax.BEST, ModelsToRelax,
                         'The models to run the final relaxation step on. '
                         'If `all`, all models are relaxed, which may be time '
@@ -156,7 +156,7 @@ flags.DEFINE_boolean('use_gpu_relax', None, 'Whether to relax on GPU. '
                      'Relax on GPU can be much faster than CPU, so it is '
                      'recommended to enable if possible. GPUs must be available'
                      ' if this setting is enabled.')
-flags.DEFINE_list('models_to_use',None, 'specify which neural network models in --model_preset that should be run, '
+flags.DEFINE_list('models_to_use',None, 'Specify which neural network models in --model_preset that should be run, '
                   'each model should be formated, '
                   'for monomer and monomer_casp14 as model_X, with X the number of the model, '
                   'for monomer_ptm as model_X_ptm, with X the number of the model, '
@@ -170,16 +170,13 @@ flags.DEFINE_boolean('templates', True, 'Whether to use templates or not for inf
 flags.DEFINE_boolean('dropout', False, 'Turn on dropout during inference to get more diversity')
 flags.DEFINE_boolean('dropout_structure_module',False, 'Activates dropout or not during inference '
                      'in the structure module')
-flags.DEFINE_string('dropout_rates_filename', None, 'Provides dropout rates for inference from a json file. '
+flags.DEFINE_string('dropout_rates_filename', None, 'Provides dropout rates for inference from a JSON file. '
                      'If None, default rates are used, if "dropout" is True.')
-flags.DEFINE_float('min_score', 0,
-                    'Only predictions with ranking confidence above this score '
-                    'will have their structure output as a pdb and pkl files '
-                    'and be present in the ranking_debug.json.')
+flags.DEFINE_float('min_score', 0, 'Predictions with a score below this threshold will be excluded from the output')
 flags.DEFINE_float('stop_recycling_below', 0,
                     'After the first recycle step, only predictions with ranking confidence above this score '
                     'will continue recycling; predictions below this threshold will still be present in '
-                    'ranking_debug.json and as output structures.')
+                    'ranking_debug.json and produce output.')
 flags.DEFINE_float('max_score', 1,
                     'Terminates the computing process when a suitable '
                     'prediction with a ranking confidence > max_score has been obtained')

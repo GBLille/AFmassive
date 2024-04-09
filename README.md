@@ -146,10 +146,10 @@ This is AFmassive parameters list added to AlphaFold 2.3.2 and their description
   &nbsp;&nbsp;&nbsp;&nbsp; the structure inference will not be performed (default: 'false')  
   **--dropout**: turn on drop out during inference to get more diversity (default: 'false')  
   **--dropout_structure_module**: activates dropout or not during inference in the structure module (default: 'false')  
-  **--dropout_rates_filename**: provides dropout rates at inference from a json file.  
+  **--dropout_rates_filename**: provides dropout rates at inference from a JSON file.  
   &nbsp;&nbsp;&nbsp;&nbsp; If None, default rates are used, if "dropout" is True.  
   **--max_recycles**: maximum number of recycles to run for multimer (default: '20')  
-  **--early_stop_tolerance**: early stopping threshold for recycling (default: '0.5')  
+  **--early_stop_tolerance**: early stop threshold for recycling (default: '0.5')  
   **--bfd_max_hits**: max hits in BFD/uniref MSA (default: '100000')  
   **--mgnify_max_hits**: max hits in mgnify MSA (default: '501')  
   **--uniprot_max_hits**: max hits in uniprot MSA (default: '50000')  
@@ -174,12 +174,10 @@ This is AFmassive parameters list added to AlphaFold 2.3.2 and their description
   &nbsp;&nbsp;&nbsp;&nbsp; (default: '5')  
   **--templates**: whether to use templates or not, setting it to false is faster than filtering by date  
   &nbsp;&nbsp;&nbsp;&nbsp; (default: 'true')  
-  **--stop_recycling_below**: After the first recycle step, only predictions with ranking confidence above this score  
-  &nbsp;&nbsp;&nbsp;&nbsp; will generate pdb and pkl files and continue recycling; predictions below this  
-  &nbsp;&nbsp;&nbsp;&nbsp; threshold will still be present in ranking_debug.json and as output structures.  
-  &nbsp;&nbsp;&nbsp;&nbsp; (default: '0')  
-  **--min_score**: Only predictions with ranking confidence above this score will have their structure output as  
-  &nbsp;&nbsp;&nbsp;&nbsp;a pdb and pkl files and be present in the ranking_debug.json (default: '0.0')  
+  **--stop_recycling_below**: after the first recycle step, only predictions with ranking confidence above this score  
+  &nbsp;&nbsp;&nbsp;&nbsp; will continue recycling; predictions below this threshold will still be present in 
+  &nbsp;&nbsp;&nbsp;&nbsp; ranking_debug.json and produce output. (default: '0')  
+  **--min_score**: predictions with a score below this threshold will be excluded from the output (default: '0.0')  
   **--max_score**: terminates the computing process when a suitable prediction with a ranking confidence > max_score  
   &nbsp;&nbsp;&nbsp;&nbsp; has been obtained (default: '1')  
   **--keep_pkl**: Whether to output pkl files or not. (default: 'true')  
