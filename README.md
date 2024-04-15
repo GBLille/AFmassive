@@ -32,9 +32,9 @@ The setup is the same as the one for AlphaFold v2.3 except that this repository 
 We use an installation based on conda. You can install it using the environment file that we provide (environment.yml).
 
 ```
-wget https://raw.githubusercontent.com/GBLille/AFmassive/v1.1.2/environment.yml
+wget https://raw.githubusercontent.com/GBLille/AFmassive/main/environment.yml
 conda env create -f environment.yml
-conda activate AFmassive-1.1.2
+conda activate AFmassive
 wget -O $CONDA_PREFIX/bin/run_AFmassive.py https://raw.githubusercontent.com/GBLille/AFmassive/main/run_AFmassive.py
 chmod +x $CONDA_PREFIX/bin/run_AFmassive.py
 wget -O ${CONDA_PREFIX}/lib/python3.10/site-packages/alphafold/common/stereo_chemical_props.txt https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
