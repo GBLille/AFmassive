@@ -565,9 +565,7 @@ class AlphaFold(hk.Module):
     diff = get_distance(ret, prev)
     score = get_iptm(ret)*0.8 + get_ptm(ret)*0.2
     jax.debug.print("Last step's score: {score}", score=score)
-    jax.debug.print("Last step's distance: {diff}", diff=diff)
-    jax.debug.print("Ends recycling")
-    
+    jax.debug.print("Last step's distance: {diff}\nEnds recycling", diff=diff)
     if not return_representations:
       del ret['representations']
     ret['num_recycles'] = num_recycles
