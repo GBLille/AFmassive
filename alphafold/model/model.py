@@ -26,7 +26,7 @@ import ml_collections
 import numpy as np
 import tensorflow.compat.v1 as tf
 import tree
-
+import jax.numpy as jnp
 
 def get_confidence_metrics(
     prediction_result: Mapping[str, Any],
@@ -60,6 +60,24 @@ def get_confidence_metrics(
 
   return confidence_metrics
 
+def encode_string(input_str, multimer):
+  if multimer:
+    encoded_array = [1]
+    version = int(input_str.split('multimer_v')[1][0])
+  else:
+    encoded_array = [0]
+    version = 1
+
+  model = int(input_str.split('_')[1])
+  encoded_array.append(model)
+  encoded_array.append(version)
+  pred = int(input_str.split('pred_')[1])
+  encoded_array.append(pred)
+
+  logging.info(f'Original prediction name: {input_str}')
+  logging.info(f'Encoded prediction name: {encoded_array}')
+
+  return jnp.array(encoded_array)
 
 class RunModel:
   """Container for JAX model."""
@@ -72,19 +90,21 @@ class RunModel:
     self.multimer_mode = config.model.global_config.multimer_mode
 
     if self.multimer_mode:
-      def _forward_fn(batch):
+      def _forward_fn(batch, prediction_name):
         model = modules_multimer.AlphaFold(self.config.model)
         return model(
             batch,
-            is_training=False)
+            is_training=False,
+            prediction_name=prediction_name)
     else:
-      def _forward_fn(batch):
+      def _forward_fn(batch, prediciton_name):
         model = modules.AlphaFold(self.config.model)
         return model(
             batch,
             is_training=False,
             compute_loss=False,
-            ensemble_representations=True)
+            ensemble_representations=True,
+            prediction_name=prediction_name)
 #            return_representations=True)
 
     self.apply = jax.jit(hk.transform(_forward_fn).apply)
@@ -150,7 +170,7 @@ class RunModel:
   def predict(self,
               feat: features.FeatureDict,
               random_seed: int,
-              ) -> Mapping[str, Any]:
+              prediction_name:str=None) -> Mapping[str, Any]:
     """Makes a prediction by inferencing the model on the provided features.
 
     Args:
@@ -165,8 +185,8 @@ class RunModel:
     self.init_params(feat)
     logging.info('Running predict with shape(feat) = %s',
                  tree.map_structure(lambda x: x.shape, feat))
-    result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat)
-
+ 
+    result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat, prediction_name=encode_string(prediction_name, self.multimer_mode))
     # This block is to ensure benchmark timings are accurate. Some blocking is
     # already happening when computing get_confidence_metrics, and this ensures
     # all outputs are blocked on.

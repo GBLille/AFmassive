@@ -272,7 +272,8 @@ def predict_structure(
 
     t_0 = time.time()
     prediction_result = model_runner.predict(processed_feature_dict,
-                                             random_seed=model_random_seed)
+                                             random_seed=model_random_seed,
+                                             prediction_name=model_name)
     t_diff = time.time() - t_0
     timings[f'predict_and_compile_{model_name}'] = t_diff
     logging.info(
