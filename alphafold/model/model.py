@@ -97,14 +97,13 @@ class RunModel:
             is_training=False,
             prediction_name=prediction_name)
     else:
-      def _forward_fn(batch, prediciton_name):
+      def _forward_fn(batch):
         model = modules.AlphaFold(self.config.model)
         return model(
             batch,
             is_training=False,
             compute_loss=False,
-            ensemble_representations=True,
-            prediction_name=prediction_name)
+            ensemble_representations=True)
 #            return_representations=True)
 
     self.apply = jax.jit(hk.transform(_forward_fn).apply)
@@ -186,7 +185,11 @@ class RunModel:
     logging.info('Running predict with shape(feat) = %s',
                  tree.map_structure(lambda x: x.shape, feat))
  
-    result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat, prediction_name=encode_string(prediction_name, self.multimer_mode))
+    if self.multimer_mode:
+      result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat, prediction_name=encode_string(prediction_name, self.multimer_mode))
+    else:
+      result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat)
+
     # This block is to ensure benchmark timings are accurate. Some blocking is
     # already happening when computing get_confidence_metrics, and this ensures
     # all outputs are blocked on.
