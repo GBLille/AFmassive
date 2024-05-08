@@ -137,7 +137,7 @@ flags.DEFINE_boolean('use_precomputed_msas', False, 'Whether to read MSAs that '
                      'runs that are to reuse the MSAs. WARNING: This will not '
                      'check if the sequence, database or configuration have '
                      'changed.')
-flags.DEFINE_integer('max_recycles', 20,'Maximum number of recycles to run for multimer')
+flags.DEFINE_integer('max_recycles', 20,'Maximum number of recycles to run')
 flags.DEFINE_integer('uniprot_max_hits', 50000, 'Max hits in uniprot MSA')
 flags.DEFINE_integer('mgnify_max_hits', 501, 'Max hits in mgnify MSA')
 flags.DEFINE_integer('uniref_max_hits', 10000, 'Max hits in uniref MSA')
