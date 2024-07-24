@@ -181,6 +181,8 @@ flags.DEFINE_float('max_score', 1,
                     'Terminates the computing process when a suitable '
                     'prediction with a ranking confidence > max_score has been obtained')
 flags.DEFINE_boolean('keep_pkl', True, 'Whether to output pkl files or not.')
+flags.DEFINE_boolean('reassign_chain', True, 'By default, chains IDs start from B'
+                      'activate this parameter to reassign the chains IDs from A to n chain.')
 
 FLAGS = flags.FLAGS
 
@@ -322,8 +324,9 @@ def predict_structure(
           remove_leading_feature_dimension=not model_runner.multimer_mode)
 
       unrelaxed_proteins[model_name] = unrelaxed_protein
-      unrelaxed_pdbs[model_name] = protein.to_pdb(unrelaxed_protein)
+      unrelaxed_pdbs[model_name] = protein.to_pdb(unrelaxed_protein, reassign_chain_id=FLAGS.reassign_chain)
       unrelaxed_pdb_path = os.path.join(output_dir, f'unrelaxed_{model_name}.pdb')
+
       with open(unrelaxed_pdb_path, 'w') as f:
         f.write(unrelaxed_pdbs[model_name])
     else:

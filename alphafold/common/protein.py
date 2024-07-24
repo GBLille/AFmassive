@@ -143,7 +143,7 @@ def _chain_end(atom_index, end_resname, chain_name, residue_index) -> str:
           f'{chain_name:>1}{residue_index:>4}')
 
 
-def to_pdb(prot: Protein) -> str:
+def to_pdb(prot: Protein, reassign_chain_id=False) -> str:
   """Converts a `Protein` instance to a PDB string.
 
   Args:
@@ -164,6 +164,10 @@ def to_pdb(prot: Protein) -> str:
   residue_index = prot.residue_index.astype(np.int32)
   chain_index = prot.chain_index.astype(np.int32)
   b_factors = prot.b_factors
+  
+  if reassign_chain_id:
+    # make indexes starts from 0 for chain IDs to start from A
+    chain_index = chain_index - chain_index.tolist()[0]
 
   if np.any(aatype > residue_constants.restype_num):
     raise ValueError('Invalid aatypes.')
