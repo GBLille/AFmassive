@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name='alphafold',
-    version='2.3.1',
+    version='2.3.2',
     description='An implementation of the inference pipeline of AlphaFold v2.0.'
     'This is a completely new model that was entered as AlphaFold2 in CASP14 '
     'and published in Nature.',
@@ -27,21 +27,21 @@ setup(
     license='Apache License, Version 2.0',
     url='https://github.com/deepmind/alphafold',
     packages=find_packages(),
-    install_requires=[
-        'absl-py',
-        'biopython',
-        'chex',
-        'dm-haiku',
-        'dm-tree',
-        'docker',
-        'immutabledict',
-        'jax',
-        'ml-collections',
-        'numpy',
-        'pandas',
-        'scipy',
-        'tensorflow-cpu',
-    ],
+    #install_requires=[
+    #    'absl-py',
+    #    'biopython',
+    #    'chex',
+    #    'dm-haiku',
+    #    'dm-tree',
+    #    'docker',
+    #    'immutabledict',
+    #    'jax',
+    #    'ml-collections',
+    #    'numpy',
+    #    'pandas',
+    #    'scipy',
+    #    'tensorflow-cpu',
+    #],
     tests_require=[
         'matplotlib',  # For notebook_utils_test.
         'mock',
