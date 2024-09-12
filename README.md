@@ -181,6 +181,9 @@ This is AFmassive parameters list added to AlphaFold 2.3.2 and their description
   **--max_score**: terminates the computing process when a suitable prediction with a ranking confidence > max_score  
   &nbsp;&nbsp;&nbsp;&nbsp; has been obtained (default: '1')  
   **--keep_pkl**: Whether to output pkl files or not. (default: 'true')  
+  **--reassign_chain**: By default, chains IDs start from B, activate this parameter to reassign the chains IDs from  
+  &nbsp;&nbsp;&nbsp;&nbsp; A to chain n. (default: 'true')
+
 
 ### Dropout
 
@@ -247,6 +250,7 @@ run_AFmassive.py
     --min_score=0 \
     --max_score=1 \
     --keep_pkl=true \
+    --reassign_chain=true \
     --uniref90_database_path=*path_to_set* \
     --mgnify_database_path=*path_to_set* \
     --template_mmcif_dir=*path_to_set* \

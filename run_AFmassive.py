@@ -181,8 +181,8 @@ flags.DEFINE_float('max_score', 1,
                     'Terminates the computing process when a suitable '
                     'prediction with a ranking confidence > max_score has been obtained')
 flags.DEFINE_boolean('keep_pkl', True, 'Whether to output pkl files or not.')
-flags.DEFINE_boolean('reassign_chain', True, 'By default, chains IDs start from B'
-                      'activate this parameter to reassign the chains IDs from A to n chain.')
+flags.DEFINE_boolean('reassign_chain', True, 'By default, chains IDs start from B, '
+                      'activate this parameter to reassign the chains IDs from A to chain n.')
 
 FLAGS = flags.FLAGS
 
