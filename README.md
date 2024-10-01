@@ -1,5 +1,7 @@
 ![header](imgs/header.png)
 
+[![DOI](https://zenodo.org/badge/746651387.svg)](https://doi.org/10.5281/zenodo.13869932)
+
 # AFmassive
 
 ## Table of contents
