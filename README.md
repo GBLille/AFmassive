@@ -273,15 +273,22 @@ script, which is directly included in [MassiveFold](https://github.com/GBLille/M
 ***N.B***: if the `--keep_pkl` is set to `false`, some plots can't be produced because they rely on the data included in 
 the *pkl* files.
 
+## Citation
+
+Raouraoua N. et al. **MassiveFold: unveiling AlphaFold’s hidden potential with optimized and parallelized massive 
+sampling**. 2024. **_Nature Computational Science_**, DOI: 10.1038/s43588-024-00714-4,  
+https://www.nature.com/articles/s43588-024-00714-4  
+
 ## Authors
 Nessim Raouraoua (UGSF - UMR 8576, France)  
 Claudio Mirabello (NBIS, Sweden)  
+Thibaut Véry (IDRIS, France)  
 Christophe Blanchet (IFB, France)  
 Björn Wallner (Linköping University, Sweden)  
 Marc F Lensink (UGSF - UMR8576, France)  
 Guillaume Brysbaert (UGSF - UMR 8576, France)  
 
-This work was carried out as part of Work Package 4 of the [MUDIS4LS project](https://www.france-bioinformatique.fr/actualites/mudis4ls-le-projet-despaces-numeriques-mutualises-pour-les-sciences-du-vivant/) 
-led by the French Bioinformatics Institute ([IFB](https://www.france-bioinformatique.fr/)). It was initiated at the 
-[IDRIS Open Hackathon](http://www.idris.fr/annonces/idris-gpu-hackathon-2023.html), part of the Open Hackathons program. 
+This work was carried out as part of Work Package 4 of the [MUDIS4LS project](https://www.france-bioinformatique.fr/actualites/mudis4ls-le-projet-despaces-numeriques-mutualises-pour-les-sciences-du-vivant/) led by the French Bioinformatics 
+Institute ([IFB](https://www.france-bioinformatique.fr/)). It was initiated at the [IDRIS Open Hackathon](http://www.idris.fr/annonces/idris-gpu-hackathon-2023.html), part of the Open Hackathons program. 
 The authors would like to acknowledge OpenACC-Standard.org for their support.
+
