@@ -60,7 +60,7 @@ def get_confidence_metrics(
 
   return confidence_metrics
 
-def encode_string(input_str, multimer):
+def encode_string(input_str, multimer, used_seed):
   if multimer:
     encoded_array = [1]
     version = int(input_str.split('multimer_v')[1][0])
@@ -74,7 +74,7 @@ def encode_string(input_str, multimer):
   pred = int(input_str.split('pred_')[1])
   encoded_array.append(pred)
 
-  logging.info(f'Original prediction name: {input_str}')
+  logging.info(f'Original prediction name: {input_str} using seed {used_seed}')
   logging.info(f'Encoded prediction name: {encoded_array}')
 
   return jnp.array(encoded_array)
@@ -186,7 +186,7 @@ class RunModel:
                  tree.map_structure(lambda x: x.shape, feat))
  
     if self.multimer_mode:
-      result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat, prediction_name=encode_string(prediction_name, self.multimer_mode))
+      result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat, prediction_name=encode_string(prediction_name, self.multimer_mode, random_seed))
     else:
       result = self.apply(self.params, jax.random.PRNGKey(random_seed), feat)
 
