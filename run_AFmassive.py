@@ -122,6 +122,12 @@ flags.DEFINE_integer('random_seed', None, 'The random seed for the data '
                      'that even if this is set, Alphafold may still not be '
                      'deterministic, because processes like GPU inference are '
                      'nondeterministic.')
+flags.DEFINE_integer('fixed_seed', None, 'The random seed for the all '
+                     'computed prediction. By default, each prediction has '
+                     'a unique seed computed from the data pipeline random seed '
+                     '(--random_seed). Note that even if this is set, Alphafold '
+                     'may still not be deterministic, because processes like GPU '
+                     'inference are nondeterministic.')
 flags.DEFINE_integer('end_prediction', 5, 'prediction to end with, can be used to parallelize jobs, '
                      'is combined with --start_prediction,'
                      'e.g. --start_prediction 20 --end_prediction 20 will only make prediction _20'
@@ -222,6 +228,7 @@ def predict_structure(
     amber_relaxer: relax.AmberRelaxation,
     benchmark: bool,
     random_seed: int,
+    fixed_seed,
     models_to_relax: ModelsToRelax,
     alignments_only: bool):
   """Predicts structure using AlphaFold for the given sequence."""
@@ -267,7 +274,7 @@ def predict_structure(
       model_runners.items()):
     logging.info('Running model %s on %s', model_name, fasta_name)
     t_0 = time.time()
-    model_random_seed = model_index + random_seed * num_models
+    model_random_seed = model_index + random_seed * num_models if not fixed_seed else fixed_seed
     processed_feature_dict = model_runner.process_features(
         feature_dict, random_seed=model_random_seed)
     timings[f'process_features_{model_name}'] = time.time() - t_0
@@ -576,9 +583,14 @@ def main(argv):
       use_gpu=FLAGS.use_gpu_relax)
 
   random_seed = FLAGS.random_seed
-  if random_seed is None:
+  fixed_seed = FLAGS.fixed_seed
+  if fixed_seed:
+    logging.info('Using seed %d for each prediction', fixed_seed)
+  elif random_seed is None:
     random_seed = random.randrange(sys.maxsize // len(model_runners))
-  logging.info('Using random seed %d for the data pipeline', random_seed)
+    logging.info('Using random seed %d for the data pipeline', random_seed)
+  else:
+    logging.info('Using random seed %d for the data pipeline', random_seed)
 
   # Predict structure for each of the sequences.
   for i, fasta_path in enumerate(FLAGS.fasta_paths):
@@ -592,6 +604,7 @@ def main(argv):
         amber_relaxer=amber_relaxer,
         benchmark=FLAGS.benchmark,
         random_seed=random_seed,
+        fixed_seed=fixed_seed,
         models_to_relax=FLAGS.models_to_relax,
         alignments_only=FLAGS.alignments_only)
 
