@@ -34,10 +34,10 @@ The setup is the same as the one for AlphaFold v2.3 except that this repository 
 We use an installation based on conda. You can install it using the environment file that we provide (environment.yml).
 
 ```
-wget https://raw.githubusercontent.com/GBLille/AFmassive/main/environment.yml
+wget https://raw.githubusercontent.com/GBLille/AFmassive/v1.1.6/environment.yml
 conda env create -f environment.yml
-conda activate AFmassive
-wget -O $CONDA_PREFIX/bin/run_AFmassive.py https://raw.githubusercontent.com/GBLille/AFmassive/main/run_AFmassive.py
+conda activate AFmassive-1.1.6
+wget -O $CONDA_PREFIX/bin/run_AFmassive.py https://raw.githubusercontent.com/GBLille/AFmassive/v1.1.6/run_AFmassive.py
 chmod +x $CONDA_PREFIX/bin/run_AFmassive.py
 wget -O ${CONDA_PREFIX}/lib/python3.10/site-packages/alphafold/common/stereo_chemical_props.txt https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
 ```
@@ -164,7 +164,7 @@ This is AFmassive parameters list added to AlphaFold 2.3.2 and their description
   **--random_seed**: The random seed for the data 'pipeline. By default, this is  randomly generated.  
   &nbsp;&nbsp;&nbsp;&nbsp; Note that even if this is set, Alphafold may still not be deterministic, because processes like  
   &nbsp;&nbsp;&nbsp;&nbsp; GPU inference are nondeterministic.  
-  **--fixed_seed**: The random seed for the all computed prediction. By default, each prediction  
+  **--fixed_seed**: The random seed for all computed predictions. By default, each prediction  
   &nbsp;&nbsp;&nbsp;&nbsp; has a unique seed computed from the data pipeline random seed (--random_seed).  
   &nbsp;&nbsp;&nbsp;&nbsp; Note that even if this is set, Alphafold may still not be deterministic, because processes like  
   &nbsp;&nbsp;&nbsp;&nbsp; GPU inference are nondeterministic.  
@@ -274,7 +274,7 @@ To select which NN models are used, separate them with a comma in the `--models_
 `--models_to_use=model_3_multimer_v1,model_3_multimer_v3`  
 
 ### Plots
-To plot prediction quality graphs, you can use the [massivefold_plots.py](https://github.com/GBLille/MassiveFold/tree/main/massivefold) 
+To plot prediction quality graphs, you can use the [massivefold_plots.py](https://github.com/GBLille/MassiveFold/tree/v1.1.6/massivefold) 
 script, which is directly included in [MassiveFold](https://github.com/GBLille/MassiveFold).
 
 ***N.B***: if the `--keep_pkl` is set to `false`, some plots can't be produced because they rely on the data included in 
