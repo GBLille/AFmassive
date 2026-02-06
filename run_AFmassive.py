@@ -122,7 +122,7 @@ flags.DEFINE_integer('random_seed', None, 'The random seed for the data '
                      'that even if this is set, Alphafold may still not be '
                      'deterministic, because processes like GPU inference are '
                      'nondeterministic.')
-flags.DEFINE_integer('fixed_seed', None, 'The random seed for all '
+flags.DEFINE_string('fixed_seed', None, 'The random seed for all '
                      'computed predictions. By default, each prediction has '
                      'a unique seed computed from the data pipeline random seed '
                      '(--random_seed). Note that even if this is set, Alphafold '
@@ -583,7 +583,7 @@ def main(argv):
       use_gpu=FLAGS.use_gpu_relax)
 
   random_seed = FLAGS.random_seed
-  fixed_seed = FLAGS.fixed_seed
+  fixed_seed = int(FLAGS.fixed_seed) if FLAGS.fixed_seed else None
   if fixed_seed:
     logging.info('Using seed %d for each prediction', fixed_seed)
   elif random_seed is None:
