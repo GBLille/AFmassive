@@ -161,6 +161,13 @@ This is AFmassive parameters list added to AlphaFold 2.3.2 and their description
   &nbsp;&nbsp;&nbsp;&nbsp; monomer model with pTM head, or multimer model; "multimer" computes the 3 versions of  
   &nbsp;&nbsp;&nbsp;&nbsp; multimer models by default if models are not specified in the *--models_to_use* parameter  
   &nbsp;&nbsp;&nbsp;&nbsp; (default: 'monomer')  
+  **--random_seed**: The random seed for the data 'pipeline. By default, this is  randomly generated.  
+  &nbsp;&nbsp;&nbsp;&nbsp; Note that even if this is set, Alphafold may still not be deterministic, because processes like  
+  &nbsp;&nbsp;&nbsp;&nbsp; GPU inference are nondeterministic.  
+  **--fixed_seed**: The random seed for the all computed prediction. By default, each prediction  
+  &nbsp;&nbsp;&nbsp;&nbsp; has a unique seed computed from the data pipeline random seed (--random_seed).  
+  &nbsp;&nbsp;&nbsp;&nbsp; Note that even if this is set, Alphafold may still not be deterministic, because processes like  
+  &nbsp;&nbsp;&nbsp;&nbsp; GPU inference are nondeterministic.  
   **--models_to_use**: specify which neural network models in *--model_preset* that should be run,  
   &nbsp;&nbsp;&nbsp;&nbsp; each model should be formated, for monomer and monomer_casp14 as model_X, with X the number  
   &nbsp;&nbsp;&nbsp;&nbsp; of the model, for monomer_ptm as model_X_ptm, with X the number of the model, for multimer as  
