@@ -266,7 +266,8 @@ def predict_structure(
   
   if FLAGS.model_preset == "multimer":
     iptms = {}
-  ptms = {}
+  if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
+    ptms = {}
 
   # Run the models.
   num_models = len(model_runners)
@@ -304,7 +305,8 @@ def predict_structure(
     ranking_confidences[model_name] = prediction_result['ranking_confidence']
     if FLAGS.model_preset == "multimer":
       iptms[model_name] = prediction_result['iptm'] * 1
-    ptms[model_name] = prediction_result['ptm'] * 1
+    if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
+      ptms[model_name] = prediction_result['ptm'] * 1
 
 
     if confidence >= FLAGS.min_score:
@@ -356,9 +358,17 @@ under threshold {FLAGS.min_score}")
     order_by_iptm = [
       model_name for model_name, iptm in
       sorted(iptms.items(), key=lambda x: x[1], reverse=True)]
-  order_by_ptm = [
-    model_name for model_name, ptm in
-    sorted(ptms.items(), key=lambda x: x[1], reverse=True)]
+  elif FLAGS.model_preset == "monomer_ptm":
+    order_by_ptm = [
+      model_name for model_name, ptm in
+      sorted(ptms.items(), key=lambda x: x[1], reverse=True)]
+  else:
+    ranked_order = [
+        model_name
+        for model_name, confidence in sorted(
+            ranking_confidences.items(), key=lambda x: x[1], reverse=True
+        )
+    ]
 
   # Relax predictions.
   if models_to_relax == ModelsToRelax.BEST:
@@ -420,12 +430,13 @@ under threshold {FLAGS.min_score}")
           'iptm': iptms,
           'order': order_by_iptm,
           }, indent=4))
-  with open(os.path.join(output_dir, 'ranking_ptm.json'), 'w') as f:
-    f.write(json.dumps(
-        {
-        'ptm': ptms,
-        'order': order_by_ptm
-        }, indent=4))
+  if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
+    with open(os.path.join(output_dir, 'ranking_ptm.json'), 'w') as f:
+      f.write(json.dumps(
+          {
+          'ptm': ptms,
+          'order': order_by_ptm
+          }, indent=4))
 
   logging.info('Final timings for %s: %s', fasta_name, timings)
 
