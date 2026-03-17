@@ -1,25 +1,24 @@
-name: AFmassive
+name: AFmassive-1.1.7
 channels:
   - conda-forge
   - bioconda
-  - defaults
 dependencies:
   - python=3.10
-  - compilers
+  - compilers=1.11.0
   - git
-  - patch
-  - pkg-config
-  - wget
-  - ipykernel
-  - py3dmol
-  - tqdm
+  - patch=2.8
+  - pkg-config=0.29.2
+  - wget=1.25.0
+  - ipykernel=7.2.0
+  - py3dmol=2.5.4
+  - tqdm=4.67.3
   - openmm=7.7.0
   - cudatoolkit=11.2.2
-  - pdbfixer
+  - pdbfixer=1.8.1
   - cudnn=8.1.0.77
   - hmmer=3.3.2
   - hhsuite=3.3.0
-  - kalign2
+  - kalign2=2.04
   - pip
   - pip:
       - absl-py==1.0.0
@@ -37,5 +36,5 @@ dependencies:
       - matplotlib==3.7.2
       - seaborn==0.13.2
       - setuptools==80.10.1
-      - git+https://github.com/GBLille/AFmassive
+      - git+https://github.com/GBLille/AFmassive@v1.1.7
       - https://storage.googleapis.com/jax-releases/cuda11/jaxlib-0.3.25+cuda11.cudnn82-cp310-cp310-manylinux2014_x86_64.whl
