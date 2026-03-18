@@ -358,7 +358,7 @@ under threshold {FLAGS.min_score}")
     order_by_iptm = [
       model_name for model_name, iptm in
       sorted(iptms.items(), key=lambda x: x[1], reverse=True)]
-  elif FLAGS.model_preset == "monomer_ptm":
+  if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
     order_by_ptm = [
       model_name for model_name, ptm in
       sorted(ptms.items(), key=lambda x: x[1], reverse=True)]
