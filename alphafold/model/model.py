@@ -30,7 +30,10 @@ import jax.numpy as jnp
 
 def get_confidence_metrics(
     prediction_result: Mapping[str, Any],
-    multimer_mode: bool) -> Mapping[str, Any]:
+    multimer_mode: bool,
+    batch: Optional[Mapping[str, Any]] = None,
+    use_probs_extra: bool = False,
+) -> Mapping[str, Any]:
   """Post processes prediction_result to get confidence metrics."""
   confidence_metrics = {}
   confidence_metrics['plddt'] = confidence.compute_plddt(
@@ -57,6 +60,19 @@ def get_confidence_metrics(
     # Monomer models use mean pLDDT for model ranking.
     confidence_metrics['ranking_confidence'] = np.mean(
         confidence_metrics['plddt'])
+
+  if (multimer_mode and batch is not None
+      and 'predicted_aligned_error' in prediction_result):
+    pae_head = prediction_result['predicted_aligned_error']
+    summary_src = dict(prediction_result)
+    summary_src.update(confidence_metrics)
+    summary_src['use_probs_extra'] = use_probs_extra
+    summary_src['predicted_aligned_error'] = pae_head
+    try:
+      summary = confidence.multimer_confidence_summary(summary_src, batch)
+      confidence_metrics["confidences"] = summary
+    except Exception as e:  # pylint: disable=broad-except
+      logging.warning('Skipping multimer summary confidences: %s', e)
 
   return confidence_metrics
 
@@ -169,7 +185,8 @@ class RunModel:
   def predict(self,
               feat: features.FeatureDict,
               random_seed: int,
-              prediction_name:str=None) -> Mapping[str, Any]:
+              prediction_name:str=None,
+              use_probs_extra: bool = False) -> Mapping[str, Any]:
     """Makes a prediction by inferencing the model on the provided features.
 
     Args:
@@ -194,8 +211,12 @@ class RunModel:
     # already happening when computing get_confidence_metrics, and this ensures
     # all outputs are blocked on.
     jax.tree_map(lambda x: x.block_until_ready(), result)
-    result.update(
-        get_confidence_metrics(result, multimer_mode=self.multimer_mode))
     logging.info('Output shape was %s',
                  tree.map_structure(lambda x: x.shape, result))
+    result.update(
+        get_confidence_metrics(
+            result,
+            multimer_mode=self.multimer_mode,
+            batch=feat if self.multimer_mode else None,
+            use_probs_extra=use_probs_extra))
     return result

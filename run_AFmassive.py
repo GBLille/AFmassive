@@ -189,6 +189,10 @@ flags.DEFINE_float('max_score', 1,
 flags.DEFINE_boolean('keep_pkl', True, 'Whether to output pkl files or not.')
 flags.DEFINE_boolean('reassign_chain', True, 'By default, chains IDs start from B, '
                       'activate this parameter to reassign the chains IDs from A to chain n.')
+flags.DEFINE_boolean(
+    'use_probs_extra', False,
+    'Use ColabFold\'s probability-weighted actifpTM variant. By default the '
+    'ColabFold binary-contact actifpTM behavior is used.')
 
 FLAGS = flags.FLAGS
 
@@ -281,9 +285,11 @@ def predict_structure(
     timings[f'process_features_{model_name}'] = time.time() - t_0
 
     t_0 = time.time()
-    prediction_result = model_runner.predict(processed_feature_dict,
-                                             random_seed=model_random_seed,
-                                             prediction_name=model_name)
+    prediction_result = model_runner.predict(
+        processed_feature_dict,
+        random_seed=model_random_seed,
+        prediction_name=model_name,
+        use_probs_extra=FLAGS.use_probs_extra)
     t_diff = time.time() - t_0
     timings[f'predict_and_compile_{model_name}'] = t_diff
     logging.info(
@@ -292,8 +298,10 @@ def predict_structure(
 
     if benchmark:
       t_0 = time.time()
-      model_runner.predict(processed_feature_dict,
-                           random_seed=model_random_seed)
+      model_runner.predict(
+          processed_feature_dict,
+          random_seed=model_random_seed,
+          use_probs_extra=FLAGS.use_probs_extra)
       t_diff = time.time() - t_0
       timings[f'predict_benchmark_{model_name}'] = t_diff
       logging.info(
@@ -316,6 +324,19 @@ def predict_structure(
       if "num_recycles" in np_prediction_result:
         logging.info(f"Number of recycles for this model: {np_prediction_result['num_recycles']}")
 
+      if 'confidences' in np_prediction_result:
+        result_json_path = os.path.join(
+            output_dir, f'result_{model_name}.json')
+        with open(result_json_path, 'w') as f:
+            f.write(
+                json.dumps(
+                  np_prediction_result['confidences'],
+                  sort_keys=True,
+                  indent=1
+                ).replace('NaN', 'null')
+            )
+
+        np_prediction_result.pop('confidences')
       # Save the model outputs.
       if FLAGS.keep_pkl:
         result_output_path = os.path.join(output_dir, f'result_{model_name}.pkl')
