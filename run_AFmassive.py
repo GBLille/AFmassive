@@ -267,9 +267,10 @@ def predict_structure(
   relax_metrics = {}
 
   ranking_confidences = {}
-  
+
   if FLAGS.model_preset == "multimer":
     iptms = {}
+    actifptms = {}
   if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
     ptms = {}
 
@@ -318,13 +319,13 @@ def predict_structure(
 
 
     if confidence >= FLAGS.min_score:
-
-      # Remove jax dependency from results.
+      # remove jax dependency from results.
       np_prediction_result = _jnp_to_np(dict(prediction_result))
       if "num_recycles" in np_prediction_result:
         logging.info(f"Number of recycles for this model: {np_prediction_result['num_recycles']}")
 
       if 'confidences' in np_prediction_result:
+        actifptms[model_name] = np_prediction_result["confidences"]["actifptm"]
         result_json_path = os.path.join(
             output_dir, f'result_{model_name}.json')
         with open(result_json_path, 'w') as f:
@@ -379,6 +380,9 @@ under threshold {FLAGS.min_score}")
     order_by_iptm = [
       model_name for model_name, iptm in
       sorted(iptms.items(), key=lambda x: x[1], reverse=True)]
+    order_by_actifptm = [
+      model_name for model_name, actifptm in
+      sorted(actifptms.items(), key=lambda x: x[1], reverse=True)]
   if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
     order_by_ptm = [
       model_name for model_name, ptm in
@@ -450,6 +454,12 @@ under threshold {FLAGS.min_score}")
           {
           'iptm': iptms,
           'order': order_by_iptm,
+          }, indent=4))
+    with open(os.path.join(output_dir, 'ranking_actifptm.json'), 'w') as f:
+      f.write(json.dumps(
+          {
+          'actifptm': actifptms,
+          'order': order_by_actifptm,
           }, indent=4))
   if FLAGS.model_preset in ["multimer", "monomer_ptm"]:
     with open(os.path.join(output_dir, 'ranking_ptm.json'), 'w') as f:
