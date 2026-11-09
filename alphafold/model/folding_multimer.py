@@ -410,7 +410,7 @@ class FoldIteration(hk.Module):
           tensor=tensor,
           safe_key=safe_key,
           rate=0.0 if self.global_config.deterministic else c.dropout,
-          is_training=is_training)
+          is_training=is_training or self.global_config.eval_dropout)
 
     rigid = activations['rigid']
 

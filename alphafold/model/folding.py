@@ -315,7 +315,7 @@ class FoldIteration(hk.Module):
           safe_key=safe_key,
           rate=c.dropout,
           is_deterministic=self.global_config.deterministic,
-          is_training=is_training)
+          is_training=is_training or self.global_config.eval_dropout)
 
     affine = quat_affine.QuatAffine.from_tensor(activations['affine'])
 
