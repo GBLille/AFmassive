@@ -17,7 +17,7 @@
 import functools
 import numbers
 from typing import Any, Dict, Iterable, Mapping, Optional, Tuple, Union
-
+from absl import logging
 from alphafold.common import residue_constants
 from alphafold.model import all_atom_multimer
 from alphafold.model import common_modules
@@ -406,11 +406,21 @@ class FoldIteration(hk.Module):
       safe_key = prng.SafeKey(hk.next_rng_key())
 
     def safe_dropout_fn(tensor, safe_key):
-      return modules.apply_dropout(
+      result = modules.apply_dropout(
           tensor=tensor,
           safe_key=safe_key,
           rate=0.0 if self.global_config.deterministic else c.dropout,
           is_training=is_training or self.global_config.eval_dropout)
+
+      # apply_dropout returns `tensor` itself when it applies no dropout. This
+      # runs when JAX compiles the model, many times (8 layers, recycling loop
+      # and final iteration), so only the first time is logged.
+      if result is not tensor:
+          logging.log_first_n(
+              logging.INFO,
+              'Dropout is applied in the structure module (rate: %s)', 1,
+              c.dropout)
+      return result
 
     rigid = activations['rigid']
 

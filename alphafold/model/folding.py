@@ -16,6 +16,7 @@
 
 import functools
 from typing import Dict
+from absl import logging
 from alphafold.common import residue_constants
 from alphafold.model import all_atom
 from alphafold.model import common_modules
@@ -310,12 +311,20 @@ class FoldIteration(hk.Module):
       safe_key = prng.SafeKey(hk.next_rng_key())
 
     def safe_dropout_fn(tensor, safe_key):
-      return prng.safe_dropout(
+      result = prng.safe_dropout(
           tensor=tensor,
           safe_key=safe_key,
           rate=c.dropout,
           is_deterministic=self.global_config.deterministic,
           is_training=is_training or self.global_config.eval_dropout)
+      # safe_dropout returns `tensor` itself when it applies no dropout.
+      
+      if result is not tensor:
+          logging.log_first_n(
+              logging.INFO,
+              'Dropout is applied in the structure module (rate: %s)', 1,
+              c.dropout)
+      return result
 
     affine = quat_affine.QuatAffine.from_tensor(activations['affine'])
 

@@ -17,6 +17,7 @@
 The structure generation code is in 'folding.py'.
 """
 import functools
+from absl import logging
 from alphafold.common import residue_constants
 from alphafold.model import all_atom
 from alphafold.model import common_modules
@@ -89,12 +90,19 @@ def dropout_wrapper(module,
       broadcast_dim = 1
   else:
     broadcast_dim = None
-
+  
+  residual_before_dropout = residual
   residual = apply_dropout(tensor=residual,
                            safe_key=safe_key,
                            rate=dropout_rate,
                            is_training=should_apply_dropout,
                            broadcast_dim=broadcast_dim)
+
+  # apply_dropout returns its input itself when it applies no dropout. This
+  # runs when JAX compiles the model, many times (each sub-module and layer,
+  # recycling loop and final iteration), so only the first time is logged.
+  if residual is not residual_before_dropout:
+    logging.log_first_n(logging.INFO, 'Dropout is applied in the Evoformer', 1)
 
   new_act = output_act + residual
 
